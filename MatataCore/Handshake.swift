@@ -14,26 +14,18 @@ public extension Handshake {
     enum Response {
         case ok
         case botNotSupported
-        case deviceNotSupported
-        case controllerNotInSensorMode
         case deviceVersionNotSupported
     }
 
-    static func parse(response: [UInt8]) throws -> Response {
-        let payload = try IO.decode(response)
-        if (payload.count == 5) {
-            if payload[1] == 0x7e {
-                if payload[3] != 0 {
-                    return .botNotSupported // Please upgrade the MatataBot which is connected to this MatataCon
-                }
-                if payload[4] != 0 {
-                    return .deviceVersionNotSupported // The firmware version does not match the version supported by the extension
-                }
-                return .ok
-            }
-        } else if payload == [0x4, 0x88, 0x7] {
-            return .controllerNotInSensorMode // The matatacon is not in sensor mode
+    static func parse(payload: Data) throws -> Response {
+        guard payload.count == 5, payload[1] == 0x7e else { throw IO.Error.invalidData }
+        
+        if payload[3] != 0 {
+            return .botNotSupported // Please upgrade the MatataBot which is connected to this MatataCon
         }
-        return .deviceNotSupported // The firmware version does not match the version supported by the extension
+        if payload[4] != 0 {
+            return .deviceVersionNotSupported // The firmware version does not match the version supported by the extension
+        }
+        return .ok
     }
 }

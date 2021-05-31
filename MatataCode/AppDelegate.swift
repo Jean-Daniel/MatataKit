@@ -15,21 +15,42 @@ import CoreBluetooth
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet var window: NSWindow!
-
+    
+    @IBOutlet var scanButton: NSButton!
+    @IBOutlet var scanningIndicator: NSProgressIndicator!
+    
+    
     private let mgr = DeviceManager()
-    private var _stateObserver: Cancellable?
+    private var _observers = Set<AnyCancellable>()
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         // Observer Manager state
-        _stateObserver = mgr.$state.sink(receiveValue: self.centralStateDidChange)
+        mgr.$state.sink(receiveValue: self.centralStateDidChange).store(in: &_observers)
+        
+        mgr.$isScanning.sink { [weak self] in
+            guard let self = self else { return }
+            self.scanButton.title = $0 ? "Stop Scanning" : "Start Scanning"
+            if $0 { self.scanningIndicator.startAnimation(nil) } else { self.scanningIndicator.stopAnimation(nil) }
+        }.store(in: &_observers)
     }
 
+    @IBAction
+    func toggleScanning(_ sender: Any) {
+        if (mgr.isScanning) {
+            mgr.stopScanning()
+        } else if (mgr.state == .poweredOn) {
+            mgr.startScanning()
+        }
+    }
+    
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
 
     private func centralStateDidChange(_ state: CBManagerState) {
+        scanButton.isEnabled = state == .poweredOn
+        
         switch state {
         case .poweredOn:
             // ... so start working with the peripheral

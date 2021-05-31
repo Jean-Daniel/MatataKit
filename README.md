@@ -38,7 +38,20 @@ Bot and Controller are Bluetooth LE devices with a single Service: `6E400001-B5A
  To control a device, first lookup for a device with the right characteristics.
 
 On dicover -> start listening on the `notify` characteristic.
-When `notify` starts, write a handshake request in the `write` characteristic: `[0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]`
+
+Once the connection is setup, the device will start broadcasting periodically its identity (null terminated string like `Car:[0x87]\n`) on the notify channel, waiting for an handshake.
+
+The handshake content remains to be defined, but for a controller app llike MatataCode, it is the following payload: `[0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]`
 
 The device should answer a 5 bytes payload like: `[0x06, 0x7e, 0x02, 0x00, 0x00]`
 
+`payload[3] ≠ 0` means that this is a controller that is itself connected to a bot that must be updated.
+`payload[4] ≠ 0` means that the device version do not match the extension version and that the device must be updated.
+
+## Controller Status
+
+When connected to a Matata Controller, it can also broadcast periodically information about its configuration.
+
+ - `[0x04, 0x88, 0x00]`: controller in sensor mode.
+ - `[0x04, 0x88, 0x07]`: the controller is not in sensor mode.
+ - `[0x04, 0x87, 0x02]` : no bot connected ?

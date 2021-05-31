@@ -14,13 +14,14 @@ public extension IO {
     enum Error: Swift.Error {
         case noData
         case invalidHeader
+        case packetTooLarge
         
         case invalidCRC
         case invalidData
         case unexpectedEnd
     }
     
-    private static func crc16(_ iArr: [UInt8]) -> UInt16 {
+    private static func crc16(_ iArr: Data) -> UInt16 {
         var var3: UInt16 = 0xffff;
         for i2 in iArr {
             var3 = var3.byteSwapped ^ UInt16(i2);
@@ -31,7 +32,12 @@ public extension IO {
         return var3;
     }
     
-    static func encode(_ data: [UInt8]) throws -> [UInt8] {
+    @inlinable
+    static func encode(_ data: [UInt8], withLength: Bool = false) throws -> Data {
+        return try encode(Data(data), withLength: withLength)
+    }
+    
+    static func encode(_ data: Data, withLength: Bool = false) throws -> Data {
         if (data.isEmpty) {
             throw Error.noData
         }
@@ -39,10 +45,14 @@ public extension IO {
         let crc16 = crc16(data)
         // append CRC16 to input data
         var checkedData = data
+        if withLength {
+            guard data.count < 253 else { throw Error.packetTooLarge }
+            checkedData.insert(UInt8(data.count + 2), at: 0)
+        }
         checkedData.append(UInt8(crc16 >> 8))
         checkedData.append(UInt8(crc16 & 0xff))
         
-        var encoded = [UInt8]()
+        var encoded = Data(capacity: checkedData.count + 1)
         encoded.append(254) // header
         for value in checkedData {
             if (value == 254) {
@@ -58,7 +68,7 @@ public extension IO {
         return encoded;
     }
     
-    static func decode(_ data: [UInt8]) throws -> [UInt8] {
+    static func decode(_ data: Data) throws -> Data {
         if (data.isEmpty) {
             throw Error.noData
         }
@@ -67,7 +77,7 @@ public extension IO {
         }
         
         // decode data
-        var payload = [UInt8]()
+        var payload = Data(capacity: data.count)
         var iter = data.dropFirst().makeIterator()
         while let value = iter.next() {
             if value == 253 {

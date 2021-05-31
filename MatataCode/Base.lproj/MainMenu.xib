@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17150" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17150"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,9 +11,11 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
-        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModuleProvider="target">
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="MatataCode" customModuleProvider="target">
             <connections>
+                <outlet property="scanButton" destination="44H-m4-Sj6" id="IAX-b3-YRp"/>
+                <outlet property="scanningIndicator" destination="JyT-sp-45q" id="8JU-Fj-aWl"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -678,16 +680,48 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="200" y="121"/>
+            <point key="canvasLocation" x="139" y="-18"/>
         </menu>
         <window title="MatataCode" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="480" height="360"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <progressIndicator maxValue="100" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="JyT-sp-45q">
+                        <rect key="frame" x="444" y="322" width="16" height="16"/>
+                    </progressIndicator>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="44H-m4-Sj6">
+                        <rect key="frame" x="13" y="313" width="124" height="32"/>
+                        <buttonCell key="cell" type="push" title="Start Scanning" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="KMf-ND-0bv">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="toggleScanning:" target="Voe-Tx-rLC" id="GRV-fa-pSi"/>
+                        </connections>
+                    </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SJL-Kj-YjK">
+                        <rect key="frame" x="377" y="322" width="61" height="16"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Scanning" id="qN2-UE-7yO">
+                            <font key="font" usesAppearanceFont="YES"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="JyT-sp-45q" firstAttribute="leading" secondItem="SJL-Kj-YjK" secondAttribute="trailing" constant="8" symbolic="YES" id="0V5-d1-paM"/>
+                    <constraint firstItem="JyT-sp-45q" firstAttribute="centerY" secondItem="SJL-Kj-YjK" secondAttribute="centerY" id="82c-lZ-C8n"/>
+                    <constraint firstItem="SJL-Kj-YjK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="44H-m4-Sj6" secondAttribute="trailing" constant="8" symbolic="YES" id="G3q-eq-Vv0"/>
+                    <constraint firstItem="SJL-Kj-YjK" firstAttribute="centerY" secondItem="44H-m4-Sj6" secondAttribute="centerY" id="YA8-Wx-Ys2"/>
+                    <constraint firstItem="44H-m4-Sj6" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="Z1w-5D-2rW"/>
+                    <constraint firstAttribute="trailing" secondItem="JyT-sp-45q" secondAttribute="trailing" constant="20" symbolic="YES" id="dPm-VZ-MEq"/>
+                    <constraint firstItem="44H-m4-Sj6" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="hKf-bM-o9Y"/>
+                </constraints>
             </view>
             <point key="canvasLocation" x="200" y="400"/>
         </window>

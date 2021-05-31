@@ -66,7 +66,17 @@ public class DeviceManager: NSObject {
         os_log("Discovered %s", String(describing: peripheral.name))
             
         // Save a local copy of the peripheral, so CoreBluetooth doesn't get rid of it.
-        devices[peripheral.identifier] = Device(owner: self, peripheral: peripheral)
+        let device: Device
+        switch (peripheral.name) {
+        case "MatataBot":
+            device = Bot(owner: self, peripheral: peripheral)
+        case "MatataCon":
+            device = Controller(owner: self, peripheral: peripheral)
+        default:
+            os_log("#Warning unsupported device name: %s", peripheral.name ?? "(null)")
+            device = Device(owner: self, peripheral: peripheral)
+        }
+        devices[peripheral.identifier] = device
         // And finally, connect to the peripheral.
         centralManager.connect(peripheral, options: nil)
     }
@@ -131,8 +141,11 @@ extension DeviceManager: CBCentralManagerDelegate {
      *  We've connected to the peripheral, now we need to discover the services and characteristics to find the 'transfer' characteristic.
      */
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        guard let device = devices[peripheral.identifier], device.state != .connected else {
+            return
+        }
         os_log("Peripheral Connected")
-        devices[peripheral.identifier]?.state = .connected
+        device.state = .connected
     }
     
     /*

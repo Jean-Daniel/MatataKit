@@ -1,0 +1,7 @@
+
+#include "project.xcconfig"
+
+#include "../hadron/xcconfigs/config/release.xcconfig"
+
+CODE_SIGN_IDENTITY[sdk=macosx*] = Apple Development
+CODE_SIGN_IDENTITY[sdk=iphoneos*] = Apple Development

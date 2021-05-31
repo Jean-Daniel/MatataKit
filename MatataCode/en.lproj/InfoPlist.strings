@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  MatataKit
+
+  Created by Jean-Daniel Dupas on 31/05/2021.
+  
+*/
+
+"NSBluetoothAlwaysUsageDescription" = "Connect to Matata Bots and Controllers";

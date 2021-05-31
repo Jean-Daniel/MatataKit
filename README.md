@@ -38,7 +38,7 @@ Bot and Controller are Bluetooth LE devices with a single Service: `6E400001-B5A
  To control a device, first lookup for a device with the right characteristics.
 
 On dicover -> start listening on the `notify` characteristic.
-When `notify` starts, write a handshake request in the `write` characteristic: `[0xfe, 0x07, 0x7e, 0x2, 0x2, 0x0, 0x0, 0x97, 0x77]`
+When `notify` starts, write a handshake request in the `write` characteristic: `[0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]`
 
-The device should answer a 8 bytes sequence like: `[0xfe, 0x06, 0x7e, 0x02, 0x00, 0x00, 0x52, 0xc6]`
+The device should answer a 5 bytes payload like: `[0x06, 0x7e, 0x02, 0x00, 0x00]`
 

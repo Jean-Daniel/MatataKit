@@ -22,7 +22,7 @@ public extension Handshake {
     static func parse(response: [UInt8]) throws -> Response {
         let payload = try IO.decode(response)
         if (payload.count == 5) {
-            if payload[1] == 126 {
+            if payload[1] == 0x7e {
                 if payload[3] != 0 {
                     return .botNotSupported // Please upgrade the MatataBot which is connected to this MatataCon
                 }

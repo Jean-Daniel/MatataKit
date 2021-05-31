@@ -1,0 +1,11 @@
+//
+//  teams.xcconfig
+//  MatataKit
+//
+//  Created by Jean-Daniel Dupas on 31/05/2021.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+DEVELOPMENT_TEAM = 3DT6DNJE39

@@ -18,6 +18,8 @@ public class Device: NSObject, Identifiable {
     private var notify: CBCharacteristic?
     private var write: CBCharacteristic?
     
+    private var packetQueue = WriteQueue()
+    
     init(owner: DeviceManager, peripheral: CBPeripheral) {
         self.owner = owner
         self.peripheral = peripheral
@@ -50,6 +52,7 @@ public class Device: NSObject, Identifiable {
                 if peripheral.state == .connected, let notify = notify, notify.isNotifying {
                     peripheral.setNotifyValue(false, for: notify)
                 }
+                packetQueue.removeAll()
                 // invalidate cached values
                 notify = nil
                 write = nil
@@ -57,13 +60,47 @@ public class Device: NSObject, Identifiable {
         }
     }
 
+    // MARK: - Message Sending
+    public func send(payload: [UInt8]) throws {
+        try send(packet: IO.encode(payload, withLength: true))
+    }
+    
+    // internal function
+    func send(packet: Data) {
+        // push packet in queue and try to send next
+        packetQueue.push(packet: packet)
+        sendPendingPackets()
+    }
+    
+    private func sendPendingPackets() {
+        // try to send next pending packet bytes
+        guard !packetQueue.isEmpty, let write = write else { return }
+        
+        let mtu = peripheral.maximumWriteValueLength(for: .withResponse)
+        packetQueue.send(mtu: mtu) {
+            peripheral.writeValue($0, for: write, type: .withResponse)
+            // Always wait for callback before sending next packet
+            return SendResult(success: true, stop: true)
+        }
+    }
+    
+    // MARK: - Request Handling
     func handle(payload data: Data) {
         switch (data[0]) {
         case 0x06:
-            handleHandshake(payload: data)
+            if (data[1] == 0x7e) {
+                handleHandshake(payload: data)
+            } else {
+                handle(response: data)
+            }
         default:
             os_log("Received %d bytes: %@", data.count, data as NSData)
         }
+    }
+    
+    // Response payload (starting by 0x06)
+    func handle(response data: Data) {
+        os_log("Received response of %d bytes: %@", data.count, data as NSData)
     }
     
     func handle(message msg: String) {
@@ -74,15 +111,9 @@ public class Device: NSObject, Identifiable {
         }
     }
     
+    // MARK: - Handshake
     func sendHandshake() {
-        // On connect, start handshake
-        guard let write = self.write else {
-            os_log("#Error send handshake requested but no write characteristic found")
-            return owner.disconnect(device: self)
-        }
-        // TODO: schedule write on write queue.
-        //            os_log("mtu %d", peripheral.maximumWriteValueLength(for: .withResponse))
-        peripheral.writeValue(try! IO.encode([0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]), for: write, type: .withResponse)
+        send(packet: try! IO.encode([0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]))
     }
     
     private func handleHandshake(payload data: Data) {
@@ -99,7 +130,7 @@ public class Device: NSObject, Identifiable {
                 break
             }
         } catch {
-            os_log("#Error failed to parse handshake response: %@", String(describing: error))
+            os_log("#Error failed to parse handshake response: %@ (%@)", String(describing: error), data as NSData)
         }
         owner.disconnect(device: self)
     }
@@ -173,6 +204,11 @@ extension Device: CBPeripheralDelegate {
                 break
             }
         }
+        // Sanity check
+        guard self.write != nil, self.notify != nil else {
+            os_log("#Error missing required characteristics. device not usable")
+            return owner.disconnect(device: self)
+        }
     }
     
     /*
@@ -194,7 +230,6 @@ extension Device: CBPeripheralDelegate {
         if characteristic.isNotifying {
             // Notification has started
             os_log("Notification began on %@", characteristic)
-            sendHandshake()
         } else {
             // Notification has stopped, so disconnect from the peripheral
             os_log("Notification stopped on %@. Disconnecting", characteristic)
@@ -229,6 +264,19 @@ extension Device: CBPeripheralDelegate {
             handle(message: message)
         }
     }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        if let error = error {
+            os_log("Error sending packet: %s", error.localizedDescription)
+            return owner.disconnect(device: self)
+        }
+        // previous packet sent, try to send more data
+        sendPendingPackets()
+    }
+    
+    public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        sendPendingPackets()
+    }
 }
 
 
@@ -237,9 +285,12 @@ public class Bot : Device {
 }
 
 public class Controller : Device {
-    
+       
     @Published
     public private(set) var isInSensorMode: Bool = true
+    
+    @Published
+    public private(set) var isBotConnected: Bool = false
     
     override func handle(payload data: Data) {
         switch (data[0]) {
@@ -251,12 +302,33 @@ public class Controller : Device {
     }
     
     private func handleStatus(payload data: Data) {
-        if data.count == 3 && data[1] == 0x88 {
-            isInSensorMode = data[2] != 0x07
+        if data[1] == 0x87 && data.count == 3 {
+            // implies in sensor mode
+            if !isInSensorMode {
+                isInSensorMode = true
+            }
+            
+            // 0x01 means connected, 0x02 means No Bot.
+            isBotConnected = data[2] == 0x01
+            os_log("is bot connected: %s (%@)", String(describing: isBotConnected), data as NSData)
             return
         }
-        if data[1] == 0x87 {
-            // bot status ?
+        else if data[1] == 0x88 && data.count == 3 {
+            
+            isInSensorMode = data[2] != 0x07
+            
+            switch (data[2]) {
+            case 0:
+                os_log("request success (%@)", data as NSData)
+            case 1:
+                os_log("request failure (%@)", data as NSData)
+            case 7:
+                os_log("not in sensor mode (%@)", data as NSData)
+            default:
+                os_log("unknown status code (%@)", data as NSData)
+            }
+            
+            return
         }
         os_log("parse status message (%d bytes): %@", data.count, data as NSData)
     }

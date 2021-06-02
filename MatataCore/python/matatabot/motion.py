@@ -19,10 +19,7 @@ class motion:
     def forward(self, step):
         data = [0x10, 0x01, 0x00, 0x00]
         mm = None
-        if isinstance(step, int):
-            mm = round(step)
-            mm = mm*10
-        elif isinstance(step, float):
+        if isinstance(step, (int, float)):
             mm = round(step)
             mm = mm*10
         elif isinstance(step, str):

@@ -33,6 +33,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.scanButton.title = $0 ? "Stop Scanning" : "Start Scanning"
             if $0 { self.scanningIndicator.startAnimation(nil) } else { self.scanningIndicator.stopAnimation(nil) }
         }.store(in: &_observers)
+        
+        mgr.$connectedDevices.sink {
+            os_log("connected devices: %@", $0)
+        }.store(in: &_observers)
     }
 
     @IBAction
@@ -42,6 +46,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else if (mgr.state == .poweredOn) {
             mgr.startScanning()
         }
+    }
+    
+    var counter: UInt8 = 1
+    @IBAction
+    func sendRainbow(_ sender: NSButton) {
+        // try? mgr.connectedDevices.first?.send(payload: [0x18, 0x05, 0x05, 0x01])
+        
+//        try? mgr.connectedDevices.first?.send(payload: [0x18, 0x06, counter])
+//        counter = (counter + 1)
+//        if counter > 6 { counter = 1 }
+        try? mgr.connectedDevices.first?.send(payload: [0x20, 0x07, 0x02])
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

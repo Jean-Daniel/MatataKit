@@ -53,29 +53,6 @@ class leds:
         self.call.blewrite(data)
         self.call.blewait()
 
-    def show_previous(self, color, index):
-        data = [0x18, 0x04, 0x05, 0x02]
-        if(color == "white"):
-            data[2] = 0x01
-        elif(color == "red"):
-            data[2] = 0x02
-        elif(color == "yellow"):
-            data[2] = 0x03
-        elif(color == "green"):
-            data[2] = 0x04
-        elif(color == "blue"):
-            data[2] = 0x05
-        elif(color == "purple"):
-            data[2] = 0x06
-        elif(color == "black"):
-            data[2] = 0x07
-        if(index == "random"):
-            data[3] = random.randint(1, 7)
-        else:
-            data[3] = index
-        self.call.blewrite(data)
-        self.call.blewait()
-
     def show_all(self, color, index):
         data = [0x18, 0x02, 0x05, 0x02]
         if(color == "white"):

@@ -52,6 +52,43 @@ The device should answer a 5 bytes payload like: `[0x06, 0x7e, 0x02, 0x00, 0x00]
 
 When connected to a Matata Controller, it can also broadcast periodically information about its configuration.
 
- - `[0x04, 0x88, 0x00]`: controller in sensor mode.
- - `[0x04, 0x88, 0x07]`: the controller is not in sensor mode.
- - `[0x04, 0x87, 0x02]` : no bot connected ?
+- `[0x04, 0x87, 0x01]` : Bot connected.
+- `[0x04, 0x87, 0x02]` : No Bot connected.
+
+After each request, the controller send a reply:
+
+- `[0x04, 0x88, 0x00]`: request OK.
+- `[0x04, 0x88, 0x01]`: request failed (invalid CRC, …).
+- `[0x04, 0x88, 0x07]`: the controller is not in sensor mode.
+ 
+
+## Bot Protocol
+
+ | Prefix    |    Command    |  Parameters                                      |
+ |-----------|:-------------:|--------------------------------------------------|
+ | `0x10 0x01` | Forward       |  distance in mm (16 bits)                        |
+ | `0x10 0x02` | Backward       |  distance in mm (16 bits)                        |
+ | `0x10 0x03` | Turn Left       |  angle in degree (16 bits)                        |
+ | `0x10 0x04` | Turn Right       |  angle in degree (16 bits)                        |
+ | `0x11 -`    | Wheel Motion       |  _See below_                        |
+ | `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                |
+ | `0x13 0x01` | Action        |  Action [0x1; 0x6]                               |
+ | `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 |
+ | `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               |
+ | `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              |
+ | `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] |
+ | `0x71 -`    | Play Treble   |  Note [0x1; 0x7] / meter [0x1; 0x6]              |
+
+### Wheel Motion
+
+ First byte is a bit field:
+  - `left: 0x01`
+  - `right: 0x02`
+
+For each wheel, append 3 bytes:
+  - direction: 
+      - `forward: 0x01`
+      - `backward: 0x02`
+  - speed (16 bits).
+      - speed 1 is `70`
+      - speed 6 is `245`

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1B0065D82664CDE6006AE849 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1B0065DA2664CDE6006AE849 /* InfoPlist.strings */; };
+		1B720706266618B5006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1B720705266618B5006AE849 /* DequeModule */; };
+		1B72070A26661D13006AE849 /* WriteQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B72070926661D13006AE849 /* WriteQueue.swift */; };
+		1B72070F26661DA7006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1B72070E26661DA7006AE849 /* DequeModule */; settings = {ATTRIBUTES = (Required, ); }; };
 		1B7321A3266224FD006AE849 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7321A2266224FD006AE849 /* AppDelegate.swift */; };
 		1B7321A5266224FE006AE849 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B7321A4266224FE006AE849 /* Assets.xcassets */; };
 		1B7321A8266224FE006AE849 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B7321A6266224FE006AE849 /* MainMenu.xib */; };
@@ -16,7 +19,6 @@
 		1BDBF02826627668006AE849 /* MatataCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BDBF02726627668006AE849 /* MatataCore.swift */; };
 		1BE4E5D8266235B9006AE849 /* MatataCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */; };
 		1BE4E5DF266235B9006AE849 /* MatataCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE4E5DE266235B9006AE849 /* MatataCoreTests.swift */; };
-		1BE4E5E1266235B9006AE849 /* MatataCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE4E5D1266235B9006AE849 /* MatataCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1BE4E5E4266235B9006AE849 /* MatataCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */; };
 		1BE4E5E5266235B9006AE849 /* MatataCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BE4E5EE26623731006AE849 /* IO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE4E5ED26623731006AE849 /* IO.swift */; };
@@ -75,6 +77,7 @@
 		1B0065D52664CB17006AE849 /* teams.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = teams.xcconfig; sourceTree = "<group>"; };
 		1B0065D92664CDE6006AE849 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1B307FD7266239C9006AE849 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1B72070926661D13006AE849 /* WriteQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteQueue.swift; sourceTree = "<group>"; };
 		1B73219F266224FD006AE849 /* MatataCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatataCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B7321A2266224FD006AE849 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1B7321A4266224FE006AE849 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -100,7 +103,6 @@
 		1BDBF03C266276E0006AE849 /* button.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = button.py; sourceTree = "<group>"; };
 		1BDBF03D266276E0006AE849 /* leds.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = leds.py; sourceTree = "<group>"; };
 		1BE4E5CF266235B9006AE849 /* MatataCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MatataCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1BE4E5D1266235B9006AE849 /* MatataCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MatataCore.h; sourceTree = "<group>"; };
 		1BE4E5D2266235B9006AE849 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BE4E5D7266235B9006AE849 /* MatataCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MatataCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BE4E5DE266235B9006AE849 /* MatataCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatataCoreTests.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1BE4E5E4266235B9006AE849 /* MatataCore.framework in Frameworks */,
+				1B720706266618B5006AE849 /* DequeModule in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +125,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B72070F26661DA7006AE849 /* DequeModule in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +165,13 @@
 			path = target;
 			sourceTree = "<group>";
 		};
+		1B72070B26661D53006AE849 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1B732196266224FD006AE849 = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +181,7 @@
 				1B0065CA2664CA71006AE849 /* xcconfigs */,
 				1B307FD7266239C9006AE849 /* README.md */,
 				1B7321A0266224FD006AE849 /* Products */,
+				1B72070B26661D53006AE849 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -239,13 +251,13 @@
 			isa = PBXGroup;
 			children = (
 				1BDBF029266276DF006AE849 /* python */,
-				1BE4E5D1266235B9006AE849 /* MatataCore.h */,
 				1BE4E5D2266235B9006AE849 /* Info.plist */,
 				1BE4E5ED26623731006AE849 /* IO.swift */,
 				1BE4E5EF26623762006AE849 /* Handshake.swift */,
 				1BDBF02726627668006AE849 /* MatataCore.swift */,
 				1B78B20826642F2C006AE849 /* Central.swift */,
 				1B78B20A266431D3006AE849 /* Device.swift */,
+				1B72070926661D13006AE849 /* WriteQueue.swift */,
 			);
 			path = MatataCore;
 			sourceTree = "<group>";
@@ -266,7 +278,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BE4E5E1266235B9006AE849 /* MatataCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +299,9 @@
 				1BE4E5E3266235B9006AE849 /* PBXTargetDependency */,
 			);
 			name = MatataCode;
+			packageProductDependencies = (
+				1B720705266618B5006AE849 /* DequeModule */,
+			);
 			productName = MatataCode;
 			productReference = 1B73219F266224FD006AE849 /* MatataCode.app */;
 			productType = "com.apple.product-type.application";
@@ -306,6 +320,9 @@
 			dependencies = (
 			);
 			name = MatataCore;
+			packageProductDependencies = (
+				1B72070E26661DA7006AE849 /* DequeModule */,
+			);
 			productName = MatataCore;
 			productReference = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */;
 			productType = "com.apple.product-type.framework";
@@ -360,6 +377,9 @@
 				Base,
 			);
 			mainGroup = 1B732196266224FD006AE849;
+			packageReferences = (
+				1B720704266618B5006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = 1B7321A0266224FD006AE849 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -412,6 +432,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1BE4E5EE26623731006AE849 /* IO.swift in Sources */,
+				1B72070A26661D13006AE849 /* WriteQueue.swift in Sources */,
 				1BDBF02826627668006AE849 /* MatataCore.swift in Sources */,
 				1BE4E5F026623762006AE849 /* Handshake.swift in Sources */,
 				1B78B20926642F2C006AE849 /* Central.swift in Sources */,
@@ -487,10 +508,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MatataCode/MatataCode.entitlements;
 				INFOPLIST_FILE = MatataCode/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xenonium.MatataCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -500,10 +521,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MatataCode/MatataCode.entitlements;
 				INFOPLIST_FILE = MatataCode/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xenonium.MatataCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -511,6 +532,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1B0065CF2664CA71006AE849 /* framework.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				INFOPLIST_FILE = MatataCore/Info.plist;
@@ -524,6 +547,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1B0065CF2664CA71006AE849 /* framework.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				INFOPLIST_FILE = MatataCore/Info.plist;
@@ -603,6 +628,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1B720704266618B5006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1B720705266618B5006AE849 /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1B720704266618B5006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+		1B72070E26661DA7006AE849 /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1B720704266618B5006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1B732197266224FD006AE849 /* Project object */;
 }

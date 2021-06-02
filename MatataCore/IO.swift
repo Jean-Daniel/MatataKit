@@ -41,20 +41,21 @@ public extension IO {
         if (data.isEmpty) {
             throw Error.noData
         }
-        
-        let crc16 = crc16(data)
-        // append CRC16 to input data
-        var checkedData = data
+       
+        var payload = data
         if withLength {
-            guard data.count < 253 else { throw Error.packetTooLarge }
-            checkedData.insert(UInt8(data.count + 2), at: 0)
+            guard payload.count < 253 else { throw Error.packetTooLarge }
+            payload.insert(UInt8(payload.count + 2), at: 0)
         }
-        checkedData.append(UInt8(crc16 >> 8))
-        checkedData.append(UInt8(crc16 & 0xff))
         
-        var encoded = Data(capacity: checkedData.count + 1)
+        let crc16 = crc16(payload)
+        // append CRC16 to input data
+        payload.append(UInt8(crc16 >> 8))
+        payload.append(UInt8(crc16 & 0xff))
+        
+        var encoded = Data(capacity: payload.count + 1)
         encoded.append(254) // header
-        for value in checkedData {
+        for value in payload {
             if (value == 254) {
                 encoded.append(253)
                 encoded.append(222)
@@ -66,6 +67,11 @@ public extension IO {
             }
         }
         return encoded;
+    }
+    
+    @inlinable
+    static func decode(_ data: [UInt8]) throws -> Data {
+        return try decode(Data(data))
     }
     
     static func decode(_ data: Data) throws -> Data {

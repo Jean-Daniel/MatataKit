@@ -12,23 +12,25 @@ import CoreBluetooth
 
 public class DeviceManager: NSObject {
     
-    private var devices = [UUID:Device]()
+    private var _devices = [UUID:Device]()
     private var centralManager: CBCentralManager!
+    
+    // publish connected devices
+    @Published
+    public var connectedDevices = [Device]()
     
     @Published
     public private(set) var state: CBManagerState  = .unknown
-    
-    public var authorization: CBManagerAuthorization { centralManager.authorization }
-
-    @available(macOS 10.15, *)
-    public class var authorization: CBManagerAuthorization { CBManager.authorization }
-    
+        
     @Published
     public private(set) var isScanning: Bool = false
     
     private var _isScanningObserver: Cancellable?
     
-    // TODO: publish connected devices
+    public var authorization: CBManagerAuthorization { centralManager.authorization }
+
+    @available(macOS 10.15, *)
+    public class var authorization: CBManagerAuthorization { CBManager.authorization }
     
     
     public override init() {
@@ -37,6 +39,10 @@ public class DeviceManager: NSObject {
         centralManager = CBCentralManager(delegate:self, queue: DispatchQueue.main)
         // Expose central manager scanning state
         _isScanningObserver = centralManager.publisher(for: \.isScanning).assign(to: \.isScanning, on: self)
+    }
+    
+    private func setConnectedDevices() {
+        connectedDevices = _devices.values.filter { $0.state == .connected }
     }
     
     // MARK: Scan Management
@@ -58,7 +64,7 @@ public class DeviceManager: NSObject {
     // MARK: Devices Lifecycle
     private func connect(peripheral: CBPeripheral) {
         // skip duplicated
-        guard devices[peripheral.identifier] == nil else {
+        guard _devices[peripheral.identifier] == nil else {
             os_log("Discovered duplicated peripheral: %s (%s)", String(describing: peripheral.name), peripheral.identifier.description)
             return
         }
@@ -76,7 +82,7 @@ public class DeviceManager: NSObject {
             os_log("#Warning unsupported device name: %s", peripheral.name ?? "(null)")
             device = Device(owner: self, peripheral: peripheral)
         }
-        devices[peripheral.identifier] = device
+        _devices[peripheral.identifier] = device
         // And finally, connect to the peripheral.
         centralManager.connect(peripheral, options: nil)
     }
@@ -86,10 +92,12 @@ public class DeviceManager: NSObject {
     }
     
     internal func disconnect(deviceId: UUID) {
-        guard let device = devices.removeValue(forKey: deviceId) else { return }
+        guard let device = _devices.removeValue(forKey: deviceId) else { return }
         
         device.state = .disconnected
         centralManager.cancelPeripheralConnection(device.peripheral)
+        // resync connected devices
+        setConnectedDevices()
     }
 
 }
@@ -108,12 +116,14 @@ extension DeviceManager: CBCentralManagerDelegate {
             isScanning = false
             
             // invalidate all devices.
-            devices.values.forEach { $0.state = .disconnected }
-            devices.removeAll()
+            _devices.values.forEach { $0.state = .disconnected }
+            _devices.removeAll()
+            // resync connected devices
+            setConnectedDevices()
         } else {
             // on powered on -> refresh connected devices
             let connectedPeripherals = centralManager.retrieveConnectedPeripherals(withServices: [Service.UUID])
-            for connected in connectedPeripherals where devices[connected.identifier] == nil {
+            for connected in connectedPeripherals where _devices[connected.identifier] == nil {
                 connect(peripheral: connected)
             }
         }
@@ -141,18 +151,21 @@ extension DeviceManager: CBCentralManagerDelegate {
      *  We've connected to the peripheral, now we need to discover the services and characteristics to find the 'transfer' characteristic.
      */
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        guard let device = devices[peripheral.identifier], device.state != .connected else {
+        guard let device = _devices[peripheral.identifier], device.state != .connected else {
             return
         }
         os_log("Peripheral Connected")
         device.state = .connected
+        
+        // refresh connected devices
+        setConnectedDevices()
     }
     
     /*
      *  Once the disconnection happens, we need to clean up our local copy of the peripheral
      */
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        guard let device = devices[peripheral.identifier] else { return }
+        guard let device = _devices[peripheral.identifier] else { return }
         os_log("Peripheral Disconnected: %s (%s)", device.id.description, String(describing: error))
         disconnect(device: device)
     }

@@ -100,7 +100,7 @@ Controller supports only LEDs commands
 
 
 | Prefix      |         Command     |  Parameters                   |
-|-------------|-------------------|-------------------------------|
+|-------------|---------------------|-------------------------------|
 | `0x18 0x02` | Show all            | `<color> <level [1;6]>`       |
 | `0x18 0x03` | Show all (RGB)      | `<r> <g> <b>`                 |
 | `0x18 0x04` | Show previous LED   | `<color> <level [1;6]>`       |
@@ -131,11 +131,63 @@ __animation__:
 
 Request sensor status.
 
-### Pressed Button
+For each request, the response if composed of 4 bytes (including the request) followed by the queried value.
 
-Request: `| 0x20 0x07 <button> |`
 
-Response: `| 0x20 0x07 <button> <result> |`
+### Light and Colors
+
+| Request               |       Command        | Response           |
+|-----------------------|----------------------|--------------------|
+| `0x20 0x01 <color>`   | is color detected    | `> 0 if true`      |
+| `0x20 0x05 0x01`      | is bright            | `> 0 if true`      |
+| `0x20 0x05 0x02`      | is dark              | `> 0 if true`      |
+| `0x28 0x02 0x01`      | get red value        | `value[0;255]`     |
+| `0x28 0x02 0x02`      | get green value      | `value[0;255]`     |
+| `0x28 0x02 0x03`      | get blue value       | `value[0;255]`     |
+| `0x28 0x02 0x04`      | get light strength   | `intensity[0;255]` |
+
+
+__color__:
+  - 1: white
+  - 2: red
+  - 3: yellow
+  - 4: green
+  - 5: blue
+  - 6: purple
+  - 7: black
+
+
+### Motion
+
+| Request               |       Command        | Response           |
+|-----------------------|----------------------|--------------------|
+| `0x20 0x02 0x01`      | is shaked            | `> 0 if true`      |
+| `0x20 0x02 0x02`      | is halo up           | `> 0 if true`      |
+| `0x20 0x02 0x03`      | is halo down         | `> 0 if true`      |
+| `0x20 0x02 0x04`      | is tilted left       | `> 0 if true`      |
+| `0x20 0x02 0x05`      | is tilted right      | `> 0 if true`      |
+| `0x20 0x02 0x06`      | is tilted forward    | `> 0 if true`      |
+| `0x20 0x02 0x07`      | is tilted backward   | `> 0 if true`      |
+| `0x20 0x02 0x08`      | is falling           | `> 0 if true`      |
+| `0x28 0x01 0x01`      | get X acceleration   | `32 bits LE float` |
+| `0x28 0x01 0x02`      | get Y acceleration   | `32 bits LE float` |
+| `0x28 0x01 0x03`      | get Z acceleration   | `32 bits LE float` |
+| `0x28 0x01 0x04`      | get roll             | `32 bits LE float` |
+| `0x28 0x01 0x05`      | get pitch            | `32 bits LE float` |
+| `0x28 0x01 0x06`      | get yaw              | `32 bits LE float` |
+| `0x28 0x01 0x07`      | get shake strength   | `32 bits LE float` |
+
+
+### Misc
+
+| Request               |       Command        | Response           |
+|-----------------------|----------------------|--------------------|
+| `0x20 0x03`           | is sound detected    | `> 0 if true`      |
+| `0x20 0x04`           | is obstacle ahead    | `> 0 if true`      |
+| `0x20 0x07 <button>`  | is button pressed    | `> 0 if true`      |
+| `0x20 0x06 0x01 <msg>`| send message         | `-`                |
+| `0x20 0x06 0x02`      | get received message | `message`          |
+
 
 __button__: 
   - 1: play
@@ -145,6 +197,4 @@ __button__:
   - 5: turn left
   - 6: music
   - 7: backward
-
-__result__: 0 if not pressed
 

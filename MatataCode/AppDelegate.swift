@@ -53,10 +53,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func sendRainbow(_ sender: NSButton) {
         // try? mgr.connectedDevices.first?.send(payload: [0x18, 0x05, 0x05, 0x01])
         
-//        try? mgr.connectedDevices.first?.send(payload: [0x18, 0x06, counter])
-//        counter = (counter + 1)
-//        if counter > 6 { counter = 1 }
-        try? mgr.connectedDevices.first?.send(payload: [0x20, 0x07, 0x02])
+        guard let device = mgr.connectedDevices.first else { return }
+        
+        sender.isEnabled = false
+        try? device.send(payload: [0x18, 0x06, counter]) { result in
+            sender.isEnabled = true
+        }
+        counter = (counter + 1)
+        if counter > 6 { counter = 1 }
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

@@ -4,8 +4,8 @@ Bot and Controller are Bluetooth LE devices with a single Service: `6E400001-B5A
  
  The Service exposes 2 characteristics:
  
- - One `write` /  `writeNoReply` characteristic: `6E400002-B5A3-F393-E0A9-E50E24DCCA9E`
- - One `notify` characteristic: `6E400003-B5A3-F393-E0A9-E50E24DCCA9E`
+ - `write` /  `writeNoReply` characteristic: `6E400002-B5A3-F393-E0A9-E50E24DCCA9E`
+ - `notify` characteristic: `6E400003-B5A3-F393-E0A9-E50E24DCCA9E`
  
  ## Payload encoding
 
@@ -41,12 +41,12 @@ On dicover -> start listening on the `notify` characteristic.
 
 Once the connection is setup, the device will start broadcasting periodically its identity (null terminated string like `Car:[0x87]\n`) on the notify channel, waiting for an handshake.
 
-The handshake content remains to be defined, but for a controller app llike MatataCode, it is the following payload: `[0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]`
+The handshake content remains to be defined, but for a controller app like MatataCode, it is the following payload: `[0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]`
 
 The device should answer a 5 bytes payload like: `[0x06, 0x7e, 0x02, 0x00, 0x00]`
 
-`payload[3] ≠ 0` means that this is a controller that is itself connected to a bot that must be updated.
-`payload[4] ≠ 0` means that the device version do not match the extension version and that the device must be updated.
+- `payload[3] ≠ 0` means that this is a controller that is itself connected to a bot that must be updated.
+- `payload[4] ≠ 0` means that the device version do not match the extension version and that the device must be updated.
 
 ## Controller Status
 
@@ -64,20 +64,21 @@ After each request, the controller send a reply:
 
 ## Bot Commands
 
-| Prefix      |    Command    |  Parameters                                      |
-|-------------|---------------|--------------------------------------------------|
-| `0x10 0x01` | Forward       |  distance in mm (16 bits)                        |
-| `0x10 0x02` | Backward      |  distance in mm (16 bits)                        |
-| `0x10 0x03` | Turn Left     |  angle in degree (16 bits)                       |
-| `0x10 0x04` | Turn Right    |  angle in degree (16 bits)                       |
-| `0x11 -`    | Wheel Motion  |  _See below_                                     |
-| `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                |
-| `0x13 0x01` | Action        |  Action [0x1; 0x6]                               |
-| `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 |
-| `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               |
-| `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              |
-| `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] |
-| `0x71 -`    | Play Treble   |  Note [0x1; 0x7] / meter [0x1; 0x6]              |
+| Prefix      |    Command    |  Parameters                                      |  Response  |
+|-------------|---------------|--------------------------------------------------|------------|
+| `0x10 0x01` | Forward       |  distance in mm (16 bits)                        | `0x88`     |
+| `0x10 0x02` | Backward      |  distance in mm (16 bits)                        | `0x88`     |
+| `0x10 0x03` | Turn Left     |  angle in degree (16 bits)                       | `-`        |
+| `0x10 0x04` | Turn Right    |  angle in degree (16 bits)                       | `-`        |
+| `0x11 -`    | Wheel Motion  |  _See below_                                     | ?          |
+| `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                | ?          |
+| `0x13 0x01` | Action        |  Action [0x1; 0x6]                               | ?          |
+| `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 | `-`        |
+| `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               | `-`        |
+| `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              | `-`        |
+| `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] | `-`        |
+| `0x71 -`    | Play Treble   |  Note [0x1; 0x7] / meter [0x1; 0x6]              | `-`        |
+
 
 ### Wheel Motion
 
@@ -197,4 +198,3 @@ __button__:
   - 5: turn left
   - 6: music
   - 7: backward
-

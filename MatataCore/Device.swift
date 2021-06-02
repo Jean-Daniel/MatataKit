@@ -10,6 +10,18 @@ import Combine
 import Foundation
 import CoreBluetooth
 
+enum RequestError: Error {
+    case deviceNotConnected
+    case requestFailure
+    case notInSensorMode
+    case unsupportedStatus
+}
+
+/*
+Packet lifecycle:
+ - send payload
+ - wait answer -> call continuation -> send next packet
+*/
 public class Device: NSObject, Identifiable {
     
     internal let peripheral: CBPeripheral
@@ -18,8 +30,7 @@ public class Device: NSObject, Identifiable {
     private var notify: CBCharacteristic?
     private var write: CBCharacteristic?
     
-    private var packetQueue = WriteQueue()
-    
+    // MARK: -
     init(owner: DeviceManager, peripheral: CBPeripheral) {
         self.owner = owner
         self.peripheral = peripheral
@@ -52,6 +63,7 @@ public class Device: NSObject, Identifiable {
                 if peripheral.state == .connected, let notify = notify, notify.isNotifying {
                     peripheral.setNotifyValue(false, for: notify)
                 }
+                responseContinuation = nil
                 packetQueue.removeAll()
                 // invalidate cached values
                 notify = nil
@@ -61,23 +73,37 @@ public class Device: NSObject, Identifiable {
     }
 
     // MARK: - Message Sending
-    public func send(payload: [UInt8]) throws {
-        try send(packet: IO.encode(payload, withLength: true))
+    
+    private var packetQueue = WriteQueue()
+    
+    // can send if no pending continuation and ready to send.
+    private var isReadyToSend: Bool = true
+    private var responseContinuation: Continuation?
+    
+    private var canSend: Bool { isReadyToSend && responseContinuation == nil }
+    
+    public func send(payload: [UInt8], continuation: @escaping Continuation) throws {
+        try send(packet: IO.encode(payload, withLength: true), continuation: continuation)
     }
     
     // internal function
-    func send(packet: Data) {
+    private func send(packet: Data, continuation: @escaping Continuation) {
+        guard peripheral.state == .connected else {
+            continuation(.failure(RequestError.deviceNotConnected))
+            return
+        }
         // push packet in queue and try to send next
-        packetQueue.push(packet: packet)
+        packetQueue.push(packet: packet, continuation: continuation)
         sendPendingPackets()
     }
     
     private func sendPendingPackets() {
         // try to send next pending packet bytes
-        guard !packetQueue.isEmpty, let write = write else { return }
+        guard canSend, !packetQueue.isEmpty, let write = write else { return }
         
         let mtu = peripheral.maximumWriteValueLength(for: .withResponse)
-        packetQueue.send(mtu: mtu) {
+        assert(responseContinuation == nil)
+        responseContinuation = packetQueue.send(mtu: mtu) {
             peripheral.writeValue($0, for: write, type: .withResponse)
             // Always wait for callback before sending next packet
             return SendResult(success: true, stop: true)
@@ -85,22 +111,8 @@ public class Device: NSObject, Identifiable {
     }
     
     // MARK: - Request Handling
-    func handle(payload data: Data) {
-        switch (data[0]) {
-        case 0x06:
-            if (data[1] == 0x7e) {
-                handleHandshake(payload: data)
-            } else {
-                handle(response: data)
-            }
-        default:
-            os_log("Received %d bytes: %@", data.count, data as NSData)
-        }
-    }
-    
-    // Response payload (starting by 0x06)
-    func handle(response data: Data) {
-        os_log("Received response of %d bytes: %@", data.count, data as NSData)
+    func handle(payload: Data) -> Result<Data, Error>? {
+        return .success(payload)
     }
     
     func handle(message msg: String) {
@@ -113,7 +125,11 @@ public class Device: NSObject, Identifiable {
     
     // MARK: - Handshake
     func sendHandshake() {
-        send(packet: try! IO.encode([0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]))
+        send(packet: try! IO.encode([0x07, 0x7e, 0x2, 0x2, 0x0, 0x0])) { result in
+            if case .success(let payload) = result {
+                self.handleHandshake(payload: payload)
+            }
+        }
     }
     
     private func handleHandshake(payload data: Data) {
@@ -255,7 +271,12 @@ extension Device: CBPeripheralDelegate {
                 os_log("#Error failed to decode packet: %@", data as NSData)
                 return
             }
-            handle(payload: payload)
+            if let result = handle(payload: payload) {
+                os_log("Received payload: %s", String(describing: result))
+                responseContinuation?(result)
+                responseContinuation = nil
+                sendPendingPackets()
+            }
         } else {
             guard let message = String(data: data, encoding: .utf8) else {
                 os_log("#Error failed to decode packet: %@", data as NSData)
@@ -271,10 +292,12 @@ extension Device: CBPeripheralDelegate {
             return owner.disconnect(device: self)
         }
         // previous packet sent, try to send more data
+        isReadyToSend = true
         sendPendingPackets()
     }
     
     public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        isReadyToSend = true
         sendPendingPackets()
     }
 }
@@ -292,44 +315,48 @@ public class Controller : Device {
     @Published
     public private(set) var isBotConnected: Bool = false
     
-    override func handle(payload data: Data) {
-        switch (data[0]) {
+    override func handle(payload: Data) -> Result<Data, Error>? {
+        switch (payload[0]) {
         case 0x04:
-            handleStatus(payload: data)
+            return handleStatus(payload: payload)
         default:
-            super.handle(payload: data)
+            return super.handle(payload: payload)
         }
     }
     
-    private func handleStatus(payload data: Data) {
-        if data[1] == 0x87 && data.count == 3 {
+    private func handleStatus(payload: Data) -> Result<Data, Error>? {
+        if payload[1] == 0x87 && payload.count == 3 {
             // implies in sensor mode
             if !isInSensorMode {
                 isInSensorMode = true
             }
             
             // 0x01 means connected, 0x02 means No Bot.
-            isBotConnected = data[2] == 0x01
-            os_log("is bot connected: %s (%@)", String(describing: isBotConnected), data as NSData)
-            return
+            isBotConnected = payload[2] == 0x01
+            os_log("is bot connected: %s (%@)", String(describing: isBotConnected), payload as NSData)
+            // status message handled
+            return nil
         }
-        else if data[1] == 0x88 && data.count == 3 {
+        else if payload[1] == 0x88 && payload.count == 3 {
             
-            isInSensorMode = data[2] != 0x07
+            isInSensorMode = payload[2] != 0x07
             
-            switch (data[2]) {
+            switch (payload[2]) {
             case 0:
-                os_log("request success (%@)", data as NSData)
+                os_log("request success (%@)", payload as NSData)
+                return .success(Data())
             case 1:
-                os_log("request failure (%@)", data as NSData)
+                os_log("request failure (%@)", payload as NSData)
+                return .failure(RequestError.requestFailure)
             case 7:
-                os_log("not in sensor mode (%@)", data as NSData)
+                os_log("not in sensor mode (%@)", payload as NSData)
+                return .failure(RequestError.notInSensorMode)
             default:
-                os_log("unknown status code (%@)", data as NSData)
+                os_log("unknown status code (%@)", payload as NSData)
+                return .failure(RequestError.unsupportedStatus)
             }
-            
-            return
         }
-        os_log("parse status message (%d bytes): %@", data.count, data as NSData)
+        os_log("unhandled status message (%d bytes): %@", payload.count, payload as NSData)
+        return .success(payload)
     }
 }

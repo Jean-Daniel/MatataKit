@@ -9,16 +9,23 @@ import os
 import Foundation
 import DequeModule
 
+public typealias Continuation = (_ result: Result<Data, Error>) -> Void
+
+private struct Request {
+    let packet: Data
+    let continuation: Continuation
+}
+
+typealias Sender = (Data) -> SendResult
+
 struct SendResult {
     let success: Bool
     let stop: Bool
 }
 
-typealias Sender = (Data) -> SendResult
-
 class WriteQueue {
 
-    private var queue = Deque<Data>()
+    private var queue = Deque<Request>()
     private var sendDataIndex: Int = 0
     
     var isEmpty: Bool { queue.isEmpty }
@@ -28,30 +35,31 @@ class WriteQueue {
         queue.removeAll()
     }
     
-    func push(packet: Data) {
-        queue.append(packet)
+    func push(packet: Data, continuation: @escaping Continuation) {
+        queue.append(Request(packet: packet, continuation: continuation))
     }
     
-    func send(packet: Data, mtu: Int, sender: Sender) {
-        push(packet: packet)
-        send(mtu: mtu, sender: sender)
+    func send(packet: Data, continuation: @escaping Continuation, mtu: Int, sender: Sender) -> Continuation? {
+        push(packet: packet, continuation: continuation)
+        return send(mtu: mtu, sender: sender)
     }
         
-    func send(mtu: Int, sender: Sender) {
-        while let data = queue.first {
-            if self.sendData(data: data, mtu: mtu, sender: sender) {
+    func send(mtu: Int, sender: Sender) -> Continuation? {
+        while let request = queue.first {
+            if self.sendData(data: request.packet, mtu: mtu, sender: sender) {
                 os_log("Packet fully sent")
                 queue.removeFirst()
                 // reset send index
                 sendDataIndex = 0
+                return request.continuation
             } else {
                 // abort until next send
-                return
+                return nil
             }
         }
-        return
+        return nil
     }
-    
+
     // Send pending packet
     private func sendData(data: Data, mtu: Int, sender: Sender) -> Bool {
         while sendDataIndex < data.count {

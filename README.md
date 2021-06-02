@@ -62,22 +62,22 @@ After each request, the controller send a reply:
 - `[0x04, 0x88, 0x07]`: the controller is not in sensor mode.
  
 
-## Bot Protocol
+## Bot Commands
 
- | Prefix    |    Command    |  Parameters                                      |
- |-----------|:-------------:|--------------------------------------------------|
- | `0x10 0x01` | Forward       |  distance in mm (16 bits)                        |
- | `0x10 0x02` | Backward       |  distance in mm (16 bits)                        |
- | `0x10 0x03` | Turn Left       |  angle in degree (16 bits)                        |
- | `0x10 0x04` | Turn Right       |  angle in degree (16 bits)                        |
- | `0x11 -`    | Wheel Motion       |  _See below_                        |
- | `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                |
- | `0x13 0x01` | Action        |  Action [0x1; 0x6]                               |
- | `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 |
- | `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               |
- | `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              |
- | `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] |
- | `0x71 -`    | Play Treble   |  Note [0x1; 0x7] / meter [0x1; 0x6]              |
+| Prefix      |    Command    |  Parameters                                      |
+|-------------|---------------|--------------------------------------------------|
+| `0x10 0x01` | Forward       |  distance in mm (16 bits)                        |
+| `0x10 0x02` | Backward      |  distance in mm (16 bits)                        |
+| `0x10 0x03` | Turn Left     |  angle in degree (16 bits)                       |
+| `0x10 0x04` | Turn Right    |  angle in degree (16 bits)                       |
+| `0x11 -`    | Wheel Motion  |  _See below_                                     |
+| `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                |
+| `0x13 0x01` | Action        |  Action [0x1; 0x6]                               |
+| `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 |
+| `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               |
+| `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              |
+| `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] |
+| `0x71 -`    | Play Treble   |  Note [0x1; 0x7] / meter [0x1; 0x6]              |
 
 ### Wheel Motion
 
@@ -92,3 +92,59 @@ For each wheel, append 3 bytes:
   - speed (16 bits).
       - speed 1 is `70`
       - speed 6 is `245`
+
+
+## Controller Commands
+
+Controller supports only LEDs commands
+
+
+| Prefix      |         Command     |  Parameters                   |
+|-------------|-------------------|-------------------------------|
+| `0x18 0x02` | Show all            | `<color> <level [1;6]>`       |
+| `0x18 0x03` | Show all (RGB)      | `<r> <g> <b>`                 |
+| `0x18 0x04` | Show previous LED   | `<color> <level [1;6]>`       |
+| `0x18 0x05` | Show next LED       | `<color> <level [1;6]>`       |
+| `0x18 0x06` | Show LED animation  | `<animation [1;6]>`           |
+| `0x18 0x07` | Show all (advanced) | 12 × `<r> <g> <b>`            |
+| `0x18 0x08` | Show single LED     | `<index [0; 11]> <r> <g> <b>` |
+
+
+__color__:
+  - 1: white
+  - 2: red
+  - 3: yellow
+  - 4: green
+  - 5: blue
+  - 6: purple
+  - 7: black
+
+__animation__:
+  - 1: spoondrift
+  - 2: meteor
+  - 3: rainbow
+  - 4: firefly
+  - 5: colorwipe
+  - 6: breathe
+
+## Sensor Queries
+
+Request sensor status.
+
+### Pressed Button
+
+Request: `| 0x20 0x07 <button> |`
+
+Response: `| 0x20 0x07 <button> <result> |`
+
+__button__: 
+  - 1: play
+  - 2: delete
+  - 3: turn right
+  - 4: forward
+  - 5: turn left
+  - 6: music
+  - 7: backward
+
+__result__: 0 if not pressed
+

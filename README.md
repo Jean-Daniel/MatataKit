@@ -64,20 +64,20 @@ After each request, the controller send a reply:
 
 ## Bot Commands
 
-| Prefix      |    Command    |  Parameters                                      |  Response  |
-|-------------|---------------|--------------------------------------------------|------------|
-| `0x10 0x01` | Forward       |  distance in mm (16 bits)                        | `0x88`     |
-| `0x10 0x02` | Backward      |  distance in mm (16 bits)                        | `0x88`     |
-| `0x10 0x03` | Turn Left     |  angle in degree (16 bits)                       | `-`        |
-| `0x10 0x04` | Turn Right    |  angle in degree (16 bits)                       | `-`        |
-| `0x11 -`    | Wheel Motion  |  _See below_                                     | ?          |
-| `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                | ?          |
-| `0x13 0x01` | Action        |  Action [0x1; 0x6]                               | ?          |
-| `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 | `-`        |
-| `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               | `-`        |
-| `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              | `-`        |
-| `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] | `-`        |
-| `0x71 -`    | Play Treble   |  Note [0x1; 0x7] / meter [0x1; 0x6]              | `-`        |
+| Prefix      |    Command    |  Parameters                                      | 
+|-------------|---------------|--------------------------------------------------|
+| `0x10 0x01` | Forward       |  distance in mm (16 bits)                        | 
+| `0x10 0x02` | Backward      |  distance in mm (16 bits)                        | 
+| `0x10 0x03` | Turn Left     |  angle in degree (16 bits)                       | 
+| `0x10 0x04` | Turn Right    |  angle in degree (16 bits)                       | 
+| `0x11 -`    | Wheel Motion  |  _See below_                                     | 
+| `0x12 0x01` | Dance         |  Dance [0x1; 0x6]                                | 
+| `0x13 0x01` | Action        |  Action [0x1; 0x6]                               | 
+| `0x15 -`    | Play Note     |  beat (16 bits) / note (16 bits)                 | 
+| `0x16 0x01` | Play Melody   |  Melody [0x1; 0xa]                               | 
+| `0x16 0x01` | Play Music    |  Music [0x11; 0x16]                              | 
+| `0x16 0x01` | Play Sound    |  Music [0x21; 0x2f]                              | 
+| `0x17 -`    | Eyes          |  bit field (left: 1, right: 2) / r, g, b [0;255] |  
 
 
 ### Wheel Motion

@@ -30,8 +30,10 @@ class WriteQueue {
     
     var isEmpty: Bool { queue.isEmpty }
     
-    func removeAll() {
+    func removeAll(with error: Error) {
         sendDataIndex = 0
+        // all continuation must be resumed
+        queue.forEach { $0.continuation(.failure(error)) }
         queue.removeAll()
     }
     

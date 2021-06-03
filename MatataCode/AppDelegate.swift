@@ -19,7 +19,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet var scanButton: NSButton!
     @IBOutlet var scanningIndicator: NSProgressIndicator!
     
-    
     private let mgr = DeviceManager()
     private var _observers = Set<AnyCancellable>()
     
@@ -51,16 +50,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var counter: UInt8 = 1
     @IBAction
     func sendRainbow(_ sender: NSButton) {
-        // try? mgr.connectedDevices.first?.send(payload: [0x18, 0x05, 0x05, 0x01])
-        
         guard let device = mgr.connectedDevices.first else { return }
         
-        sender.isEnabled = false
-        try? device.send(payload: [0x18, 0x06, counter]) { result in
+        // sender.isEnabled = false
+        try? device.send(payload: [0x15, 0x01, 0x88, 0x00, 0x80]) { result in
+            os_log("response: %@", String(describing: result))
             sender.isEnabled = true
         }
         counter = (counter + 1)
-        if counter > 6 { counter = 1 }
+//        if counter > 6 { counter = 1 }
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

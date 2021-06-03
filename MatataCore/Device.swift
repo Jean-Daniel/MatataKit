@@ -13,6 +13,7 @@ import CoreBluetooth
 enum RequestError: Error {
     case deviceNotConnected
     case requestFailure
+    case invalidParameter // out of range parameter
     case notInSensorMode
     case unsupportedStatus
 }
@@ -63,8 +64,11 @@ public class Device: NSObject, Identifiable {
                 if peripheral.state == .connected, let notify = notify, notify.isNotifying {
                     peripheral.setNotifyValue(false, for: notify)
                 }
+                responseContinuation?(.failure(RequestError.deviceNotConnected))
                 responseContinuation = nil
-                packetQueue.removeAll()
+                
+                packetQueue.removeAll(with: RequestError.deviceNotConnected)
+                
                 // invalidate cached values
                 notify = nil
                 write = nil
@@ -88,6 +92,7 @@ public class Device: NSObject, Identifiable {
     
     // internal function
     private func send(packet: Data, continuation: @escaping Continuation) {
+        // FIXME: must ensure the handshake has been performed before sending user requests
         guard peripheral.state == .connected else {
             continuation(.failure(RequestError.deviceNotConnected))
             return
@@ -108,6 +113,10 @@ public class Device: NSObject, Identifiable {
             // Always wait for callback before sending next packet
             return SendResult(success: true, stop: true)
         }
+        if responseContinuation != nil {
+            // FIXME: start timeout
+            // required because there is no response when sending a bot command when no bot is connected.
+        }
     }
     
     // MARK: - Request Handling
@@ -125,6 +134,7 @@ public class Device: NSObject, Identifiable {
     
     // MARK: - Handshake
     func sendHandshake() {
+        // FIXME: must not send if a handshake is already pending.
         send(packet: try! IO.encode([0x07, 0x7e, 0x2, 0x2, 0x0, 0x0])) { result in
             if case .success(let payload) = result {
                 self.handleHandshake(payload: payload)
@@ -331,9 +341,12 @@ public class Controller : Device {
                 isInSensorMode = true
             }
             
-            // 0x01 means connected, 0x02 means No Bot.
-            isBotConnected = payload[2] == 0x01
-            os_log("is bot connected: %s (%@)", String(describing: isBotConnected), payload as NSData)
+            if isBotConnected != (payload[2] == 0x01) {
+                // 0x01 means connected, 0x02 means No Bot.
+                isBotConnected.toggle()
+                // FIXME: if the last command is a bot command and bot is not connected -> return failure
+                os_log("is bot connected: %s (%@)", String(describing: isBotConnected), payload as NSData)
+            }
             // status message handled
             return nil
         }
@@ -343,13 +356,20 @@ public class Controller : Device {
             
             switch (payload[2]) {
             case 0:
-                os_log("request success (%@)", payload as NSData)
+                os_log("request success")
                 return .success(Data())
             case 1:
-                os_log("request failure (%@)", payload as NSData)
+                os_log("request failure")
                 return .failure(RequestError.requestFailure)
+            case 3:
+                // may be trigger by send play_treble command (0x71)
+                os_log("unsupported command ?")
+                return .failure(RequestError.unsupportedStatus)
+            case 4:
+                os_log("invalid parameter")
+                return .failure(RequestError.invalidParameter)
             case 7:
-                os_log("not in sensor mode (%@)", payload as NSData)
+                os_log("not in sensor mode")
                 return .failure(RequestError.notInSensorMode)
             default:
                 os_log("unknown status code (%@)", payload as NSData)

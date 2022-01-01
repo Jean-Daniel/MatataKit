@@ -35,7 +35,7 @@ Bot and Controller are Bluetooth LE devices with a single Service: `6E400001-B5A
 
  ## Handshake
  
- To control a device, first lookup for a device with the right characteristics.
+To control a device, first lookup for a device with the right characteristics.
 
 On dicover -> start listening on the `notify` characteristic.
 
@@ -132,7 +132,7 @@ __animation__:
 
 Request sensor status.
 
-For each request, the response if composed of 4 bytes (including the request) followed by the queried value.
+For each request, the response is composed of 4 bytes (including the request) followed by the queried value.
 
 
 ### Light and Colors

@@ -33,11 +33,11 @@ public extension IO {
     }
     
     @inlinable
-    static func encode(_ data: [UInt8], withLength: Bool = false) throws -> Data {
+    static func encode(_ data: [UInt8], withLength: Bool) throws -> Data {
         return try encode(Data(data), withLength: withLength)
     }
     
-    static func encode(_ data: Data, withLength: Bool = false) throws -> Data {
+    static func encode(_ data: Data, withLength: Bool) throws -> Data {
         if (data.isEmpty) {
             throw Error.noData
         }

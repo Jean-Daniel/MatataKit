@@ -8,14 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		1B0065D82664CDE6006AE849 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1B0065DA2664CDE6006AE849 /* InfoPlist.strings */; };
+		1B06CED1277C565F006AE849 /* DeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B06CED0277C565F006AE849 /* DeviceManager.swift */; };
+		1B143996277AE8D9006AE849 /* DeviceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B143995277AE8D9006AE849 /* DeviceList.swift */; };
+		1B148A9527790BEB006AE849 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B148A8A27790BC1006AE849 /* ContentView.swift */; };
 		1B720706266618B5006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1B720705266618B5006AE849 /* DequeModule */; };
-		1B72070A26661D13006AE849 /* WriteQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B72070926661D13006AE849 /* WriteQueue.swift */; };
 		1B72070F26661DA7006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1B72070E26661DA7006AE849 /* DequeModule */; settings = {ATTRIBUTES = (Required, ); }; };
 		1B7321A3266224FD006AE849 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7321A2266224FD006AE849 /* AppDelegate.swift */; };
 		1B7321A5266224FE006AE849 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B7321A4266224FE006AE849 /* Assets.xcassets */; };
 		1B7321A8266224FE006AE849 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B7321A6266224FE006AE849 /* MainMenu.xib */; };
 		1B78B20926642F2C006AE849 /* Central.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B78B20826642F2C006AE849 /* Central.swift */; };
 		1B78B20B266431D3006AE849 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B78B20A266431D3006AE849 /* Device.swift */; };
+		1B8B4341277B6385006AE849 /* EmptyPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8B4340277B6385006AE849 /* EmptyPlaceholder.swift */; };
+		1B8C6813277CB288006AE849 /* DeviceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8C6812277CB288006AE849 /* DeviceRow.swift */; };
+		1B8C6815277CBC3E006AE849 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8C6814277CBC3E006AE849 /* Time.swift */; };
+		1BA62F76277F47E2006AE849 /* ViewTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA62F75277F47E2006AE849 /* ViewTask.swift */; };
+		1BA83B64277B4A30006AE849 /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA83B63277B4A30006AE849 /* DeviceView.swift */; };
+		1BB070CD2778E12F006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1BB070CC2778E12F006AE849 /* DequeModule */; };
 		1BDBF02826627668006AE849 /* MatataCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BDBF02726627668006AE849 /* MatataCore.swift */; };
 		1BE4E5D8266235B9006AE849 /* MatataCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */; };
 		1BE4E5DF266235B9006AE849 /* MatataCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE4E5DE266235B9006AE849 /* MatataCoreTests.swift */; };
@@ -76,8 +84,10 @@
 		1B0065D42664CA71006AE849 /* project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = project.xcconfig; sourceTree = "<group>"; };
 		1B0065D52664CB17006AE849 /* teams.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = teams.xcconfig; sourceTree = "<group>"; };
 		1B0065D92664CDE6006AE849 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1B06CED0277C565F006AE849 /* DeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManager.swift; sourceTree = "<group>"; };
+		1B143995277AE8D9006AE849 /* DeviceList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceList.swift; sourceTree = "<group>"; };
+		1B148A8A27790BC1006AE849 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1B307FD7266239C9006AE849 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1B72070926661D13006AE849 /* WriteQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteQueue.swift; sourceTree = "<group>"; };
 		1B73219F266224FD006AE849 /* MatataCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatataCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B7321A2266224FD006AE849 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1B7321A4266224FE006AE849 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -85,6 +95,11 @@
 		1B7321AA266224FE006AE849 /* MatataCode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MatataCode.entitlements; sourceTree = "<group>"; };
 		1B78B20826642F2C006AE849 /* Central.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Central.swift; sourceTree = "<group>"; };
 		1B78B20A266431D3006AE849 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		1B8B4340277B6385006AE849 /* EmptyPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPlaceholder.swift; sourceTree = "<group>"; };
+		1B8C6812277CB288006AE849 /* DeviceRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRow.swift; sourceTree = "<group>"; };
+		1B8C6814277CBC3E006AE849 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		1BA62F75277F47E2006AE849 /* ViewTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewTask.swift; sourceTree = "<group>"; };
+		1BA83B63277B4A30006AE849 /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
 		1BDBF02726627668006AE849 /* MatataCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatataCore.swift; sourceTree = "<group>"; };
 		1BDBF02B266276E0006AE849 /* matatabot.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = matatabot.py; sourceTree = "<group>"; };
 		1BDBF02C266276E0006AE849 /* music.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = music.py; sourceTree = "<group>"; };
@@ -126,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B72070F26661DA7006AE849 /* DequeModule in Frameworks */,
+				1BB070CD2778E12F006AE849 /* DequeModule in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +181,29 @@
 			path = target;
 			sourceTree = "<group>";
 		};
+		1B06CED2277C5878006AE849 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1B148A8A27790BC1006AE849 /* ContentView.swift */,
+				1B143995277AE8D9006AE849 /* DeviceList.swift */,
+				1B8C6812277CB288006AE849 /* DeviceRow.swift */,
+				1BA83B63277B4A30006AE849 /* DeviceView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1B06CED3277C5891006AE849 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1B7321A2266224FD006AE849 /* AppDelegate.swift */,
+				1B8B4340277B6385006AE849 /* EmptyPlaceholder.swift */,
+				1B06CED0277C565F006AE849 /* DeviceManager.swift */,
+				1BA62F75277F47E2006AE849 /* ViewTask.swift */,
+				1B06CED2277C5878006AE849 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		1B72070B26661D53006AE849 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -198,7 +237,7 @@
 		1B7321A1266224FD006AE849 /* MatataCode */ = {
 			isa = PBXGroup;
 			children = (
-				1B7321A2266224FD006AE849 /* AppDelegate.swift */,
+				1B06CED3277C5891006AE849 /* Sources */,
 				1B7321A4266224FE006AE849 /* Assets.xcassets */,
 				1B7321A6266224FE006AE849 /* MainMenu.xib */,
 				1B0065C82664C9E6006AE849 /* Info.plist */,
@@ -257,7 +296,7 @@
 				1BDBF02726627668006AE849 /* MatataCore.swift */,
 				1B78B20826642F2C006AE849 /* Central.swift */,
 				1B78B20A266431D3006AE849 /* Device.swift */,
-				1B72070926661D13006AE849 /* WriteQueue.swift */,
+				1B8C6814277CBC3E006AE849 /* Time.swift */,
 			);
 			path = MatataCore;
 			sourceTree = "<group>";
@@ -322,6 +361,7 @@
 			name = MatataCore;
 			packageProductDependencies = (
 				1B72070E26661DA7006AE849 /* DequeModule */,
+				1BB070CC2778E12F006AE849 /* DequeModule */,
 			);
 			productName = MatataCore;
 			productReference = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */;
@@ -352,8 +392,8 @@
 		1B732197266224FD006AE849 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					1B73219E266224FD006AE849 = {
 						CreatedOnToolsVersion = 12.5;
@@ -378,7 +418,7 @@
 			);
 			mainGroup = 1B732196266224FD006AE849;
 			packageReferences = (
-				1B720704266618B5006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				1BB070CB2778E12F006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = 1B7321A0266224FD006AE849 /* Products */;
 			projectDirPath = "";
@@ -423,6 +463,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B06CED1277C565F006AE849 /* DeviceManager.swift in Sources */,
+				1B143996277AE8D9006AE849 /* DeviceList.swift in Sources */,
+				1BA62F76277F47E2006AE849 /* ViewTask.swift in Sources */,
+				1B8C6813277CB288006AE849 /* DeviceRow.swift in Sources */,
+				1B148A9527790BEB006AE849 /* ContentView.swift in Sources */,
+				1BA83B64277B4A30006AE849 /* DeviceView.swift in Sources */,
+				1B8B4341277B6385006AE849 /* EmptyPlaceholder.swift in Sources */,
 				1B7321A3266224FD006AE849 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -431,8 +478,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B8C6815277CBC3E006AE849 /* Time.swift in Sources */,
 				1BE4E5EE26623731006AE849 /* IO.swift in Sources */,
-				1B72070A26661D13006AE849 /* WriteQueue.swift in Sources */,
 				1BDBF02826627668006AE849 /* MatataCore.swift in Sources */,
 				1BE4E5F026623762006AE849 /* Handshake.swift in Sources */,
 				1B78B20926642F2C006AE849 /* Central.swift in Sources */,
@@ -638,6 +685,14 @@
 				minimumVersion = 0.0.3;
 			};
 		};
+		1BB070CB2778E12F006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -649,6 +704,11 @@
 		1B72070E26661DA7006AE849 /* DequeModule */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1B720704266618B5006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+		1BB070CC2778E12F006AE849 /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1BB070CB2778E12F006AE849 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = DequeModule;
 		};
 /* End XCSwiftPackageProductDependency section */

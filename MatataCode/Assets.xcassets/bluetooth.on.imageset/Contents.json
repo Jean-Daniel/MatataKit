@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "account_server.pdf",
+      "filename" : "MenuExtra-BluetoothOn.pdf",
       "idiom" : "universal"
     }
   ],
@@ -10,7 +10,7 @@
     "version" : 1
   },
   "properties" : {
-    "auto-scaling" : "auto",
-    "preserves-vector-representation" : true
+    "preserves-vector-representation" : true,
+    "template-rendering-intent" : "template"
   }
 }

@@ -82,17 +82,17 @@ After each request, the controller send a reply:
 
 ### Wheel Motion
 
- First byte is a bit field:
+First byte is a bit field:
   - `left: 0x01`
   - `right: 0x02`
 
 For each wheel, append 3 bytes:
   - direction: 
-      - `forward: 0x01`
-      - `backward: 0x02`
+    - `forward: 0x01`
+    - `backward: 0x02`
   - speed (16 bits).
-      - speed 1 is `70`
-      - speed 6 is `245`
+    - speed 1 is `70`
+    - speed 6 is `245`
 
 
 ## Controller Commands

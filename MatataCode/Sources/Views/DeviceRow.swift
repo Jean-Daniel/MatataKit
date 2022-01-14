@@ -8,22 +8,44 @@
 import SwiftUI
 import MatataCore
 
+extension MatataDevice.State {
+
+  var localizedString: LocalizedStringKey {
+    switch (self) {
+    case .connecting:
+      return "connecting…"
+    case .connected:
+      return "connected"
+    case .disconnecting:
+      return "disconnecting…"
+    case .disconnected:
+      return "disconnected"
+    }
+  }
+}
+
 struct DeviceRow<Device: DeviceProtocol>: View {
 
   @ObservedObject var device: Device
 
   var body: some View {
     HStack(alignment: .center) {
-      Image("Bot")
-        .resizable()
-        .scaledToFit()
-        .foregroundColor(.accentColor)
-        .frame(maxHeight: 32)
-      VStack(alignment: .leading) {
+      Circle()
+        .fill()
+        .frame(width: 36, height: 36, alignment: .center)
+        .overlay(
+          Image("matatabot")
+            .resizable()
+            .scaledToFit()
+            .foregroundColor(.accentColor)
+            .frame(maxHeight: 24)
+        )
+
+      VStack(alignment: .leading, spacing: 2) {
         Text(device.name)
           .font(Font.headline)
-        
-        Text(device.id.uuidString)
+
+        Text(device.state.localizedString)
           .foregroundColor(.secondary)
           .font(Font.subheadline.italic())
       }
@@ -31,10 +53,12 @@ struct DeviceRow<Device: DeviceProtocol>: View {
       Button {
         try? device.disconnect(unregister: false)
       } label: {
-        Image(systemName: "bolt.horizontal.circle.fill")
+        Image(systemName: "xmark.circle.fill")
       }
+      .opacity(device.state == .connected ? 1 : 0)
       .buttonStyle(.plain)
-    }.padding()
+      .padding(4)
+    }.padding(8)
   }
 }
 

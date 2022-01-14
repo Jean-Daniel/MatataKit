@@ -1,14 +1,28 @@
 //
-//  EmptyPlaceholder.swift
+//  SwiftUI.swift
 //  MatataCode
 //
-//  Created by Jean-Daniel Dupas on 28/12/2021.
+//  Created by Jean-Daniel Dupas on 02/01/2022.
 //
 
 import SwiftUI
 
+extension Image {
+
+  #if canImport(AppKit)
+  init(named name: NSImage.Name) {
+    guard let image = NSImage(named: name) else {
+      self.init(name)
+      return
+    }
+    self.init(nsImage: image)
+  }
+  #endif
+
+}
+
 struct EmptyStateViewModifier<EmptyContent>: ViewModifier where EmptyContent: View {
-  var isEmpty: Bool
+  let isEmpty: Bool
   let emptyContent: () -> EmptyContent
 
   func body(content: Content) -> some View {
@@ -25,7 +39,7 @@ struct EmptyStateViewModifier<EmptyContent>: ViewModifier where EmptyContent: Vi
 
 extension View {
   func emptyPlaceholder<EmptyContent>(_ isEmpty: Bool,
-                                      emptyContent: @escaping () -> EmptyContent) -> some View where EmptyContent: View {
+                                      @ViewBuilder emptyContent: @escaping () -> EmptyContent) -> some View where EmptyContent: View {
     modifier(EmptyStateViewModifier(isEmpty: isEmpty, emptyContent: emptyContent))
   }
 }

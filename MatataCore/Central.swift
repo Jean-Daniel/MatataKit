@@ -33,7 +33,9 @@ public class MatataCentral: NSObject, ObservableObject {
   private var _peripherals = [UUID:Peripheral]()
 
   // MARK: - Authorization
+#if os(macOS)
   public var authorization: CBManagerAuthorization { centralManager.authorization }
+#endif
 
   @available(macOS 10.15, *)
   public class var authorization: CBManagerAuthorization { CBManager.authorization }
@@ -51,7 +53,14 @@ public class MatataCentral: NSObject, ObservableObject {
   private var _isScanningObserver: Cancellable?
 
   @Published
-  public private(set) var isScanning: Bool = false
+  public private(set) var isScanning: Bool = false {
+    didSet {
+      // Make sure to stop scan operation when the underlying value change
+      if !isScanning {
+        stopScan()
+      }
+    }
+  }
 
   public override init() {
     super.init()
@@ -103,11 +112,13 @@ public class MatataCentral: NSObject, ObservableObject {
     scanTimeout.cancel()
 
     // actually stop the scan
-    centralManager.stopScan()
+    if (centralManager.isScanning) {
+        centralManager.stopScan()
+    }
 
     // resume all waiting continuations.
     scanListeners.forEach { $0.resume() }
-    scanListeners.removeAll()
+    scanListeners.removeAll(keepingCapacity: false)
   }
 
   /// Scan for devices during a number of seconds.
@@ -219,13 +230,10 @@ extension MatataCentral: CBCentralManagerDelegate {
     self.state = central.state
 
     if central.state.rawValue < CBManagerState.poweredOn.rawValue {
-      // Stop scanning task if running
-      stopScan()
-
       _peripherals.values.forEach {
         $0.device.invalidate()
       }
-      _peripherals.removeAll()
+      _peripherals.removeAll(keepingCapacity: false)
       devices = []
     } else {
       // on powered on -> refresh connected devices

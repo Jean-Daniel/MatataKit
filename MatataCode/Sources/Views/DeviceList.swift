@@ -10,21 +10,23 @@ import MatataCore
 
 private enum ScannerStatus {
   case scanning, idle, powerOff
+  case denied, restricted
   case unavailable
-  case unauthorized
 
-  var title: String {
+  var title: LocalizedStringKey {
     switch (self) {
     case .scanning:
       return "scanning…"
     case .idle:
       return ""
     case .powerOff:
-      return "powered off"
+      return "bluetooth off"
     case .unavailable:
-      return "unavailable"
-    case .unauthorized:
-      return "unauthorized"
+      return "bluetooth unavailable"
+    case .denied:
+      return "bluetooth access denied"
+    case .restricted:
+      return "bluetooth restricted"
     }
   }
 
@@ -50,7 +52,14 @@ private extension DevicesScanner {
     case .poweredOff:
       return .powerOff
     case .unauthorized:
-      return .unauthorized
+      switch (Self.authorization) {
+      case .restricted:
+        return .restricted
+      case .notDetermined, .denied, .allowedAlways:
+        return .denied
+      @unknown default:
+        return .denied
+      }
     default:
       return .unavailable
     }
@@ -64,8 +73,8 @@ struct StatusBar<Scanner: DevicesScanner>: View {
   var body: some View {
     HStack(alignment: .center) {
 
-      Image(devicesScanner.status.isAvailable ? "central_connected" : "central_disconnected")
-        .foregroundColor(devicesScanner.status.isAvailable ? .accentColor : .red)
+      Image(devicesScanner.status.isAvailable ? "bluetooth.on" : "bluetooth.off")
+        .foregroundColor(devicesScanner.status.isAvailable ? .accentColor : nil)
       Text(devicesScanner.status.title)
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundColor(.secondary)
@@ -86,7 +95,7 @@ struct DeviceList<Scanner: DevicesScanner, Device>: View where Scanner.Device ==
     VStack(spacing: 0) {
       List(selection: $selection) {
         Section {
-          ForEach(devicesScanner.devices) { device in
+          ForEach(devicesScanner.devices, id: \.id) { device in
             NavigationLink(destination: DeviceView(device: device)) {
               DeviceRow(device: device)
             }
@@ -98,15 +107,20 @@ struct DeviceList<Scanner: DevicesScanner, Device>: View where Scanner.Device ==
             }
           }
         } header: {
-            Text("Devices")
+            Label("Devices", systemImage: "cpu")
         }
       }.emptyPlaceholder(devicesScanner.devices.isEmpty) {
         EmptyDeviceList(devicesScanner: devicesScanner)
+      }.onDeleteCommand {
+        let device = devicesScanner.devices.first {
+          $0.id == selection
+        }
+        try? device?.disconnect(unregister: true)
       }
-      .listStyle(.sidebar)
+      .listStyle(.automatic)
       .navigationTitle("Devices")
       //      .refreshable {
-      //        await deviceManager.startScanning(for: .seconds(10))
+      //        await deviceManager.startScanning(for: .scanDuration)
       //      }
       StatusBar(devicesScanner: devicesScanner)
     }
@@ -128,7 +142,7 @@ struct EmptyDeviceList<Scanner: DevicesScanner>: View {
       VStack {
         Text("No Devices")
         Button("Start Scanning") {
-          try? devicesScanner.startScan(for: .seconds(10))
+          try? devicesScanner.startScan(for: .scanDuration)
         }
       }
     }

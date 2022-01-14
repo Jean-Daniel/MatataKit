@@ -23,10 +23,7 @@ enum RequestError: Error {
   case unsupportedStatus
 }
 
-private typealias Continuation = (_ result: Result<Data, Error>) -> Void
-
 /*
-
  - discover services -> didDiscoverServices
  - discover characteristics -> didDiscoverCharacteristicsFor
  - save characteristics and setNotifyValue(true)
@@ -56,11 +53,13 @@ public class MatataDevice: NSObject, Identifiable, ObservableObject {
 
   private var _deviceStateObserver: Cancellable?
 
-  public enum State {
+  public enum State: Identifiable {
     case connecting // CB connecting state || CB connected and not handshake done
     case connected // CB connected && handshake done
     case disconnecting // CB disconnecting
-    case disconnected // CB disconnected
+    case disconnected; // CB disconnected;
+
+    public var id: State { self }
   }
 
   @Published
@@ -136,8 +135,8 @@ public class MatataDevice: NSObject, Identifiable, ObservableObject {
 
     resume(.failure(RequestError.deviceNotConnected))
 
-    packetQueue.forEach { $0.continuation(.failure(RequestError.deviceNotConnected)) }
-    packetQueue.removeAll()
+    packetQueue.forEach { $0.continuation.resume(throwing: RequestError.deviceNotConnected) }
+    packetQueue.removeAll(keepingCapacity: false)
 
     stopTimeoutTimer()
 
@@ -152,16 +151,16 @@ public class MatataDevice: NSObject, Identifiable, ObservableObject {
 
   private struct Request {
     let packet: Data
-    let continuation: Continuation
+    let continuation: CheckedContinuation<Data, Error>
   }
   private var packetQueue = Deque<Request>()
-  private var responseContinuation: Continuation?
+  private var responseContinuation: CheckedContinuation<Data, Error>?
 
   private func resume(_ result: Result<Data, Error>) {
     stopTimeoutTimer()
     if let continuation = responseContinuation {
       responseContinuation = nil
-      continuation(result)
+      continuation.resume(with: result)
     }
 
     if case .success = result {
@@ -174,9 +173,10 @@ public class MatataDevice: NSObject, Identifiable, ObservableObject {
   }
 
   public func disconnect(unregister: Bool = false) throws {
-    try central.disconnect(self)
     if (unregister) {
-        central.unregister(self)
+      central.unregister(self)
+    } else {
+      try central.disconnect(self)
     }
   }
 
@@ -187,21 +187,22 @@ public class MatataDevice: NSObject, Identifiable, ObservableObject {
   }
 
   public func send(payload: [UInt8]) async throws -> Data {
+    guard state == .connected else { throw RequestError.deviceNotConnected }
+
     return try await send(packet: IO.encode(payload, withLength: true))
   }
 
   // internal function
   private func send(packet: Data) async throws -> Data {
-    guard state == .connected else { throw RequestError.deviceNotConnected }
+    // do not check for self.state as this function is used during handshake
+    guard peripheral.state == .connected else { throw RequestError.deviceNotConnected }
 
     let mtu = peripheral.maximumWriteValueLength(for: .withResponse)
     guard packet.count <= mtu else { throw RequestError.packetTooBig }
 
     // push packet in queue and try to send next
     return try await withCheckedThrowingContinuation { continuation in
-      packetQueue.append(Request(packet: packet) {
-        continuation.resume(with: $0)
-      })
+      packetQueue.append(Request(packet: packet, continuation: continuation))
       sendPendingPackets()
     }
   }
@@ -253,12 +254,14 @@ public class MatataDevice: NSObject, Identifiable, ObservableObject {
     // make sure to not send if a handshake is already pending.
     handshakeState = .waitingHandshakeResponse
 
-    packetQueue.append(Request(packet: Handshake.packet) { result in
-      if case .success(let payload) = result {
-        self.handleHandshake(payload: payload)
+    Task {
+      do {
+        let response = try await send(packet: Handshake.packet)
+        handleHandshake(payload: response)
+      } catch {
+        os_log("#Error handshake failed with error: \(error.localizedDescription)")
       }
-    })
-    sendPendingPackets()
+    }
   }
 
   private func handleHandshake(payload data: Data) {
@@ -315,9 +318,11 @@ extension MatataDevice: CBPeripheralDelegate {
       return reset()
     }
 
+    os_log("  - service: %@", service)
     // Again, we loop through the array, just in case and check if it's the right one
     guard let serviceCharacteristics = service.characteristics else { return }
     for characteristic in serviceCharacteristics {
+      os_log("  - characteristic: %@ (%@)", characteristic, characteristic.value.flatMap{ $0 as NSData } ?? "")
       switch (characteristic.uuid) {
 
       case Service.notifyCharacteristic:
@@ -380,13 +385,15 @@ extension MatataDevice: CBPeripheralDelegate {
   public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
     // Deal with errors (if any)
     if let error = error {
-      os_log("Error update value for characteristic: %s", error.localizedDescription)
+      os_log("#Error update value for characteristic: %s", error.localizedDescription)
       return reset()
     }
 
     guard let data = characteristic.value, data.count > 0 else {
       return reset()
     }
+
+    os_log("did update value (%d bytes): %@", data.count, data as NSData)
 
     // 0xfe048702b211
     if data[0] == 0xfe {
@@ -466,6 +473,8 @@ public class Controller : MatataDevice {
 
   private func handleStatus(payload: Data) -> Result<Data, Error>? {
     if payload[1] == 0x87 && payload.count == 3 {
+      os_log("status message: %@", payload as NSData)
+
       // implies in sensor mode
       if !isInSensorMode {
         isInSensorMode = true

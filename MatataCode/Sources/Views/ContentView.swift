@@ -21,7 +21,7 @@ struct ContentView<Scanner: DevicesScanner, Device>: View where Scanner.Device =
                  devicesScanner: devicesScanner)
         .frame(minWidth: 250)
         .async(when: devicesScanner.state == .poweredOn) {
-          try? await devicesScanner.scan(for: .seconds(10))
+          try? await devicesScanner.scan(for: .scanDuration)
         }
       EmptyView()
     }

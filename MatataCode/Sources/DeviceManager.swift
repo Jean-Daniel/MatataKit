@@ -10,10 +10,16 @@ import MatataCore
 import CoreBluetooth
 import SwiftUI
 
+extension DispatchTimeInterval {
+  static let scanDuration: DispatchTimeInterval = .seconds(5)
+}
+
 @MainActor
 protocol DevicesScanner: ObservableObject {
 
   associatedtype Device : DeviceProtocol
+
+  static var authorization: CBManagerAuthorization { get }
 
   var state: CBManagerState { get }
 
@@ -23,7 +29,6 @@ protocol DevicesScanner: ObservableObject {
   func stopScan()
 
   func scan(for duration: DispatchTimeInterval) async throws
-
 
   var devices: [Device] { get }
 }
@@ -47,6 +52,7 @@ extension MatataDevice: DeviceProtocol {
 
 // MARK: - Design Time
 class DesignTimeScanner : DevicesScanner {
+  static var authorization: CBManagerAuthorization = .allowedAlways
 
   let state: CBManagerState = .poweredOn
 
@@ -84,7 +90,7 @@ class DesignTimeScanner : DevicesScanner {
 
     // resume all waiting continuations.
     scanListeners.forEach { $0.resume() }
-    scanListeners.removeAll()
+    scanListeners.removeAll(keepingCapacity: false)
   }
   
   func scan(for duration: DispatchTimeInterval) async throws {
@@ -105,7 +111,7 @@ class DesignTimeScanner : DevicesScanner {
   }
 
   fileprivate func remove(device: DesignTimeDevice) {
-    devices.removeAll {$0 === device}
+    devices.removeAll { $0 === device }
   }
 }
 
@@ -114,18 +120,21 @@ class DesignTimeDevice: DeviceProtocol {
   unowned let central: DesignTimeScanner?
 
   let id: UUID = UUID()
-  
-  var state: MatataDevice.State = .disconnected
+
+  @Published
+  var state: MatataDevice.State
 
   let name: String = "MatataBot"
 
-  init(central: DesignTimeScanner? = nil) {
+  init(central: DesignTimeScanner? = nil, state: MatataDevice.State = .disconnected) {
     self.central = central
+    self.state = state
   }
 
   func connect() throws {
     state = .connected
   }
+  
   func disconnect(unregister: Bool) throws {
     state = .disconnected
     if (unregister) {

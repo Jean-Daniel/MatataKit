@@ -11,6 +11,9 @@
 		1B06CED1277C565F006AE849 /* DeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B06CED0277C565F006AE849 /* DeviceManager.swift */; };
 		1B143996277AE8D9006AE849 /* DeviceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B143995277AE8D9006AE849 /* DeviceList.swift */; };
 		1B148A9527790BEB006AE849 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B148A8A27790BC1006AE849 /* ContentView.swift */; };
+		1B1F56912783ACC5006AE849 /* Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1F56902783ACC5006AE849 /* Commands.swift */; };
+		1B6AD6A327898656006AE849 /* VisualEffectBlur-Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6AD6A127898656006AE849 /* VisualEffectBlur-Mac.swift */; };
+		1B6AD6A427898656006AE849 /* VisualEffectBlur-iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6AD6A227898656006AE849 /* VisualEffectBlur-iOS.swift */; };
 		1B720706266618B5006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1B720705266618B5006AE849 /* DequeModule */; };
 		1B72070F26661DA7006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1B72070E26661DA7006AE849 /* DequeModule */; settings = {ATTRIBUTES = (Required, ); }; };
 		1B7321A3266224FD006AE849 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7321A2266224FD006AE849 /* AppDelegate.swift */; };
@@ -18,12 +21,12 @@
 		1B7321A8266224FE006AE849 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B7321A6266224FE006AE849 /* MainMenu.xib */; };
 		1B78B20926642F2C006AE849 /* Central.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B78B20826642F2C006AE849 /* Central.swift */; };
 		1B78B20B266431D3006AE849 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B78B20A266431D3006AE849 /* Device.swift */; };
-		1B8B4341277B6385006AE849 /* EmptyPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8B4340277B6385006AE849 /* EmptyPlaceholder.swift */; };
 		1B8C6813277CB288006AE849 /* DeviceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8C6812277CB288006AE849 /* DeviceRow.swift */; };
 		1B8C6815277CBC3E006AE849 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8C6814277CBC3E006AE849 /* Time.swift */; };
 		1BA62F76277F47E2006AE849 /* ViewTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA62F75277F47E2006AE849 /* ViewTask.swift */; };
 		1BA83B64277B4A30006AE849 /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA83B63277B4A30006AE849 /* DeviceView.swift */; };
 		1BB070CD2778E12F006AE849 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 1BB070CC2778E12F006AE849 /* DequeModule */; };
+		1BC65DD027825982006AE849 /* SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC65DCF27825982006AE849 /* SwiftUI.swift */; };
 		1BDBF02826627668006AE849 /* MatataCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BDBF02726627668006AE849 /* MatataCore.swift */; };
 		1BE4E5D8266235B9006AE849 /* MatataCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE4E5CF266235B9006AE849 /* MatataCore.framework */; };
 		1BE4E5DF266235B9006AE849 /* MatataCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE4E5DE266235B9006AE849 /* MatataCoreTests.swift */; };
@@ -87,7 +90,10 @@
 		1B06CED0277C565F006AE849 /* DeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManager.swift; sourceTree = "<group>"; };
 		1B143995277AE8D9006AE849 /* DeviceList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceList.swift; sourceTree = "<group>"; };
 		1B148A8A27790BC1006AE849 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1B1F56902783ACC5006AE849 /* Commands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commands.swift; sourceTree = "<group>"; };
 		1B307FD7266239C9006AE849 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1B6AD6A127898656006AE849 /* VisualEffectBlur-Mac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VisualEffectBlur-Mac.swift"; sourceTree = "<group>"; };
+		1B6AD6A227898656006AE849 /* VisualEffectBlur-iOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VisualEffectBlur-iOS.swift"; sourceTree = "<group>"; };
 		1B73219F266224FD006AE849 /* MatataCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatataCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B7321A2266224FD006AE849 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1B7321A4266224FE006AE849 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -95,11 +101,11 @@
 		1B7321AA266224FE006AE849 /* MatataCode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MatataCode.entitlements; sourceTree = "<group>"; };
 		1B78B20826642F2C006AE849 /* Central.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Central.swift; sourceTree = "<group>"; };
 		1B78B20A266431D3006AE849 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
-		1B8B4340277B6385006AE849 /* EmptyPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPlaceholder.swift; sourceTree = "<group>"; };
 		1B8C6812277CB288006AE849 /* DeviceRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRow.swift; sourceTree = "<group>"; };
 		1B8C6814277CBC3E006AE849 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		1BA62F75277F47E2006AE849 /* ViewTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewTask.swift; sourceTree = "<group>"; };
 		1BA83B63277B4A30006AE849 /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
+		1BC65DCF27825982006AE849 /* SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI.swift; sourceTree = "<group>"; };
 		1BDBF02726627668006AE849 /* MatataCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatataCore.swift; sourceTree = "<group>"; };
 		1BDBF02B266276E0006AE849 /* matatabot.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = matatabot.py; sourceTree = "<group>"; };
 		1BDBF02C266276E0006AE849 /* music.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = music.py; sourceTree = "<group>"; };
@@ -196,12 +202,22 @@
 			isa = PBXGroup;
 			children = (
 				1B7321A2266224FD006AE849 /* AppDelegate.swift */,
-				1B8B4340277B6385006AE849 /* EmptyPlaceholder.swift */,
 				1B06CED0277C565F006AE849 /* DeviceManager.swift */,
 				1BA62F75277F47E2006AE849 /* ViewTask.swift */,
+				1BC65DCF27825982006AE849 /* SwiftUI.swift */,
 				1B06CED2277C5878006AE849 /* Views */,
+				1B6AD6A027898656006AE849 /* VisualEffects */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		1B6AD6A027898656006AE849 /* VisualEffects */ = {
+			isa = PBXGroup;
+			children = (
+				1B6AD6A127898656006AE849 /* VisualEffectBlur-Mac.swift */,
+				1B6AD6A227898656006AE849 /* VisualEffectBlur-iOS.swift */,
+			);
+			path = VisualEffects;
 			sourceTree = "<group>";
 		};
 		1B72070B26661D53006AE849 /* Frameworks */ = {
@@ -297,6 +313,7 @@
 				1B78B20826642F2C006AE849 /* Central.swift */,
 				1B78B20A266431D3006AE849 /* Device.swift */,
 				1B8C6814277CBC3E006AE849 /* Time.swift */,
+				1B1F56902783ACC5006AE849 /* Commands.swift */,
 			);
 			path = MatataCore;
 			sourceTree = "<group>";
@@ -466,11 +483,13 @@
 				1B06CED1277C565F006AE849 /* DeviceManager.swift in Sources */,
 				1B143996277AE8D9006AE849 /* DeviceList.swift in Sources */,
 				1BA62F76277F47E2006AE849 /* ViewTask.swift in Sources */,
+				1BC65DD027825982006AE849 /* SwiftUI.swift in Sources */,
+				1B6AD6A327898656006AE849 /* VisualEffectBlur-Mac.swift in Sources */,
 				1B8C6813277CB288006AE849 /* DeviceRow.swift in Sources */,
 				1B148A9527790BEB006AE849 /* ContentView.swift in Sources */,
 				1BA83B64277B4A30006AE849 /* DeviceView.swift in Sources */,
-				1B8B4341277B6385006AE849 /* EmptyPlaceholder.swift in Sources */,
 				1B7321A3266224FD006AE849 /* AppDelegate.swift in Sources */,
+				1B6AD6A427898656006AE849 /* VisualEffectBlur-iOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,6 +499,7 @@
 			files = (
 				1B8C6815277CBC3E006AE849 /* Time.swift in Sources */,
 				1BE4E5EE26623731006AE849 /* IO.swift in Sources */,
+				1B1F56912783ACC5006AE849 /* Commands.swift in Sources */,
 				1BDBF02826627668006AE849 /* MatataCore.swift in Sources */,
 				1BE4E5F026623762006AE849 /* Handshake.swift in Sources */,
 				1B78B20926642F2C006AE849 /* Central.swift in Sources */,
@@ -587,6 +607,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xenonium.MatataCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SUPPORTED_PLATFORMS = "macosx iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -602,6 +623,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xenonium.MatataCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SUPPORTED_PLATFORMS = "macosx iphonesimulator iphoneos";
 			};
 			name = Release;
 		};

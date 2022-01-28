@@ -4,8 +4,8 @@ Bot and Controller are Bluetooth LE devices with a single Service: `6E400001-B5A
  
  The Service exposes 2 characteristics:
  
- - `write` /  `writeNoReply` characteristic: `6E400002-B5A3-F393-E0A9-E50E24DCCA9E`
- - `notify` characteristic: `6E400003-B5A3-F393-E0A9-E50E24DCCA9E`
+ - `6E400002-B5A3-F393-E0A9-E50E24DCCA9E` with properties `write` /  `writeNoReply` 
+ - `6E400003-B5A3-F393-E0A9-E50E24DCCA9E` with property `notify` 
  
  ## Payload encoding
 
@@ -39,7 +39,7 @@ To control a device, first lookup for a device with the right characteristics.
 
 On dicover -> start listening on the `notify` characteristic.
 
-Once the connection is setup, the device will start broadcasting periodically its identity (null terminated string like `Car:[0x87]\n`) on the notify channel, waiting for an handshake.
+Once the connection is setup, the device will start broadcasting every second its identity (null terminated string like `Car:[0x87]\n`) on the notify channel, waiting for an handshake.
 
 The handshake content remains to be defined, but for a controller app like MatataCode, it is the following payload: `[0x07, 0x7e, 0x2, 0x2, 0x0, 0x0]`
 

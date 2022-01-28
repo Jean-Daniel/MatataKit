@@ -14,6 +14,55 @@ struct RGBColor {
   let blue: UInt8
 }
 
+private extension Data {
+  mutating func append<Integer: FixedWidthInteger>(_ integer: Integer) {
+    Swift.withUnsafeBytes(of: integer.bigEndian) { bytes in
+      append(contentsOf: bytes)
+    }
+  }
+
+  //  func scanValue<T: FixedWidthInteger>(at index: Data.Index, endianess: Endianness) -> T {
+  //    let number: T = self.subdata(in: index..<index + MemoryLayout<T>.size).withUnsafeBytes({ $0.pointee })
+  //    switch endianess {
+  //    case .BigEndian:
+  //      return number.bigEndian
+  //    case .LittleEndian:
+  //      return number.littleEndian
+  //    }
+  //  }
+}
+
+struct Command<Args> {
+
+  let payload: [UInt8]
+  let args: Args
+}
+
+extension Command where Args == UInt8 {
+  func packet() -> Data {
+    var packet = Data(payload)
+    packet.append(args)
+    return packet
+  }
+}
+
+extension Command where Args: FixedWidthInteger {
+  func packet() -> Data {
+    var packet = Data(payload)
+    packet.append(args)
+    return packet
+  }
+}
+
+extension Command where Args == (UInt16, UInt16) {
+  func packet() -> Data {
+    var packet = Data(payload)
+    packet.append(args.0)
+    packet.append(args.1)
+    return packet
+  }
+}
+
 struct BotCommands {
 
   // MARK: Motion
